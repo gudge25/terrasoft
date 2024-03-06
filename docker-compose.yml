@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  messaging-host:
+    image: bpmonline/messaging.host:latest
+    ports:
+      - 2013:80
+      - 2014:443
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Qwerty7
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/backend.pfx
+    dns_search: ${INTERNAL_DOMAIN}
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - ./logs:/app/Logs
+      - ./etc/appsettings.json:/app/appsettings.json
+      - ./etc/nlog.config:/app/nlog.config
+      - ./etc/ssl:/https:ro
